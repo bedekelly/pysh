@@ -4,7 +4,7 @@ A tiny, intuitive interface to access shell commands as if they were functions
 in Python.
 
 Examples:
-    >>> from sh import sh
+    >>> from pysh import sh
     >>> sh.cp("file1", "file2")
     >>> sh.mv("file3", "file4", "file5", "directoryA")
     >>> sh.ls("--color=auto")
