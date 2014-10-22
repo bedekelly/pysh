@@ -24,10 +24,10 @@ Just like in Bash, you can define aliases for shell calls you make regularly.
     ... ls output, colored ...
 ```
 
-#####"But how does it work?"
-Simple answer: **hackz**.
+#####How does it work?
+Magic and faerie dust.
 
-More complicated answer:
+#####Seriously though, how does it work?
 Overloading the `__getattribute__` class method. This gets called whenever an  object's attribute is referenced with the syntax `object.attribute` (or the `getattr` function, as it turns out).
 
 It's pretty aggressive, so you can get into infinite loops pretty quickly if you don't use its parent class's `__getattribute__` method with `self` passed in as the first parameter. The `__getattribute__` method gets passed two arguments: the object instance (by convention named `self`) and the name of the attribute which has been referenced. I take that attribute name and return a partial `subprocess.call` function (i.e. an object that, when called, has the first parameter 'frozen' as the attribute name I pass in when creating the partial function).
