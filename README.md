@@ -8,7 +8,7 @@ Very tiny dynamic interface for shell scripting with python.
 >>> from pysh import sh
 >>> sh.cp("file1", "file2")
 >>> sh.mv("file3", "file4", "file5", "directoryA")
->>> sh.ls("--color=auto")
+>>> sh.ls()
     ... ls output ...
 >>>
 >>> sh.asdfghjkl()
@@ -37,7 +37,7 @@ It's not really the `subprocess.call` function itself though, it's a kind of wra
 The wrapper is mainly implemented with the `itertools.chain` function, which can flatten shallow lists. Some type-checking in a list comp means you can also pass in your list of arguments as an iterable, and it will be flattened accordingly.
 
 ####Wishlist:
-- [x] Multiple shell calls per function/alias, e.g.
+- [x] [DONE] Multiple shell calls per function/alias, e.g.
 ```
 sh.alias(up = 'sudo apt-get update;'
                 'sudo apt-get upgrade -y;'
