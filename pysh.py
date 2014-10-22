@@ -27,6 +27,7 @@ class _ShellHandler:
     def alias(self, **kwargs):
         """Bind an alias to a given command."""
         self.aliases.update(kwargs)
+        # We know there should only be one value in kwargs.keys()
         print("pysh: {}: alias added".format(
             list(kwargs.keys())[0]))
 
