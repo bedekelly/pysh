@@ -15,6 +15,14 @@ Very tiny dynamic interface for shell scripting with python. Pipes to come soon 
 pysh: asdfghjkl: command not found
 ```
 
+####Aliases:
+Just like in Bash, you can define aliases for shell calls you make regularly.
+```
+>>> from pysh import sh
+>>> sh.alias(ls='ls --color=auto')
+>>> sh.ls()
+    ... ls output, colored ...
+>>>
 
 #####"But how does it work?"
 Simple answer: hax.
@@ -27,3 +35,4 @@ or as a single string, e.g.:
 These can also be mixed for clarity, e.g.:
 `sh.cp("-r", "directory1 directory2 directory3", "destfolder")`
 The wrapper is mainly implemented with the itertools chain function, which flattens the list of arguments.
+You can also pass in your list of arguments as an iterable, and it will be flattened accordingly.
