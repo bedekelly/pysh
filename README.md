@@ -37,11 +37,11 @@ It's not really the `subprocess.call` function itself though, it's a kind of wra
 The wrapper is mainly implemented with the `itertools.chain` function, which can flatten shallow lists. Some type-checking in a list comp means you can also pass in your list of arguments as an iterable, and it will be flattened accordingly.
 
 ####Wishlist:
-* Multiple shell calls per function/alias, e.g.
+- [x] Multiple shell calls per function/alias, e.g.
 ```
 sh.alias(up = 'sudo apt-get update;'
                 'sudo apt-get upgrade -y;'
                 'printf "[+] Update completed successfully"'
                 )
 ```
-* Colored (red/green) status indicator for each command run, possibly getting the return value from check_call or parsing error messages.
+- [ ] Colored (red/green) status indicator for each command run, possibly getting the return value from check_call or parsing error messages.

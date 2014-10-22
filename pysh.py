@@ -73,7 +73,7 @@ def _my_chdir(dirpath="~"):
     dirpath = dirpath.replace("~", os.path.expanduser("~"))
     os.chdir(dirpath)
 
-def _subprocess_call(command, *moreargs, **kwargs):
+def _subprocess_call(command, *moreargs):
     """Allow for partial function to freeze one arg.
        Can take any comma-separated args, or a list of args, or a
        string of space-separated args (or any combination of them)."""
@@ -84,15 +84,19 @@ def _subprocess_call(command, *moreargs, **kwargs):
     if moreargs:
         moreargs = flatten(splitify(moreargs))
         command.extend(moreargs)
-    try:
-        subprocess.check_call(command, **kwargs)
-    except FileNotFoundError:
-        print("pysh: {}: command not found".format(
-            command[0]
-        ))
-    except:
-        # Any program which fails will print its own error message.
-        pass
+    full_command = ' '.join(command)
+    full_command = full_command.split(";")
+    for command in full_command:
+        command = command.split()
+        try:
+            subprocess.check_call(command)
+        except FileNotFoundError:
+            print("pysh: {}: command not found".format(
+                command[0]
+            ))
+        except:
+            # Any program which fails will print its own error message.
+            pass
 
 
 sh = _ShellHandler()
