@@ -12,9 +12,9 @@ Examples:
     >>>
     >>> sh.asdfghjkl()
     pysh: asdfghjkl: command not found
-    
+
 """
 
 # Dummy program so as not to clutter the namespace.
-from lib.handler import ShellHandler as _ShellHandler
+from _handler import ShellHandler as _ShellHandler
 sh = _ShellHandler()
