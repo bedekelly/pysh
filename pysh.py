@@ -29,11 +29,30 @@ class _ShellHandler:
 
     def alias(self, **kwargs):
         self.aliases.update(kwargs)
+        print("pysh: {}: alias added".format(
+            list(kwargs.keys())[0]))
+
+    def remalias(self, aliasname):
+        try:
+            del self.aliases[aliasname]
+        except KeyError:
+            print("pysh: {}: alias not found".format(aliasname))
+        else:
+            print("pysh: {}: alias removed".format(aliasname))
+
+    def showalias(self, aliasname):
+        print("pysh: {a} is aliased to {d[a]}"
+              "".format(a=aliasname, d=self.aliases))
+
+    def listalias(self, aliasname):
+        for item in self.aliases.items():
+            print("pysh: {i[0]} is aliased to {i[1]}".format(i=item))
 
     def __getattribute__(self, attrname):
         """Override attribute access for dynamic lookup."""
         if attrname not in object.__getattribute__(self, "aliases"):
-            if attrname not in ["cd", "alias", "aliases"]:
+            if attrname not in ["cd", "alias", "aliases", "remalias",
+                                "showalias", "listalias"]:
                 return _my_partial(_subprocess_call, [attrname])
             else:
                 return object.__getattribute__(self, attrname)
