@@ -12,11 +12,8 @@ Examples:
     >>>
     >>> sh.asdfghjkl()
     pysh: asdfghjkl: command not found
-
 """
-
 import os
-import os.path
 import subprocess
 from itertools import chain
 from functools import partial as _partial
@@ -63,15 +60,18 @@ class _ShellHandler:
             return _my_partial(_subprocess_call,
                                self.aliases[attrname].split())
 
+
 class _my_partial(_partial):
     def __repr__(self):
-        return "pysh call: {} {}".format(self.args[0][0],
-                                         self.args[1:] if self.args[1:]
-                                            else "")
+        return "pysh call: {} {}".format(
+                self.args[0][0], self.args[1:] if self.args[1] else "")
+
 
 def _my_chdir(dirpath="~"):
-    dirpath = dirpath.replace("~", os.path.expanduser("~"))
-    os.chdir(dirpath)
+    # dirpath = dirpath.replace("~", os.path.expanduser("~"))
+    # os.chdir(dirpath)
+    os.chdir(os.path.expanduser(dirpath))
+
 
 def _subprocess_call(command, *moreargs):
     """Allow for partial function to freeze one arg.
@@ -91,12 +91,9 @@ def _subprocess_call(command, *moreargs):
         try:
             subprocess.check_call(command)
         except FileNotFoundError:
-            print("pysh: {}: command not found".format(
-                command[0]
-            ))
+            print("pysh: {}: command not found".format(command[0]))
         except:
             # Any program which fails will print its own error message.
             pass
-
 
 sh = _ShellHandler()
