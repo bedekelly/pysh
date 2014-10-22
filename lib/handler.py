@@ -1,6 +1,7 @@
 import os
 import subprocess
 from itertools import chain
+from functools import partial as _partial
 
 class ShellHandler:
     """Handler for shell commands."""
@@ -13,15 +14,17 @@ class ShellHandler:
 
     def __getattribute__(self, attrname):
         """Override attribute access for dynamic lookup."""
-        from functools import partial
         if attrname not in object.__getattribute__(self, "aliases"):
             if attrname not in ["cd", "alias", "aliases"]:
-                return partial(_subprocess_call, [attrname])
+                return _my_partial(_subprocess_call, [attrname])
             else:
                 return object.__getattribute__(self, attrname)
         else:
             return partial(_subprocess_call, self.aliases[attrname].split())
 
+class _my_partial(_partial):
+    def __repr__(self):
+        return "pysh call: {} {}".format(self.args[0][0], self.args[1:] if self.args[1:] else "")
 
 def _subprocess_call(command, *moreargs, **kwargs):
     """Allow for partial function to freeze one arg."""
