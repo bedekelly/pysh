@@ -25,11 +25,13 @@ class _ShellHandler:
         self.aliases = {}
 
     def alias(self, **kwargs):
+        """Bind an alias to a given command."""
         self.aliases.update(kwargs)
         print("pysh: {}: alias added".format(
             list(kwargs.keys())[0]))
 
-    def remalias(self, aliasname):
+    def rmalias(self, aliasname):
+        """Remove an alias if present."""
         try:
             del self.aliases[aliasname]
         except KeyError:
@@ -38,6 +40,7 @@ class _ShellHandler:
             print("pysh: {}: alias removed".format(aliasname))
 
     def showalias(self, aliasname):
+        """Print the command to which a given alias is bound if present."""
         try:
             print("pysh: {a} is aliased to {d}"
                   "".format(a=aliasname, d=self.aliases[aliasname]))
@@ -45,31 +48,41 @@ class _ShellHandler:
             print("pysh: {}: no such alias".format(aliasname))
 
     def listalias(self):
+        """Print a list of currently stored aliases."""
         for key in self.aliases.keys():
             self.showalias(key)
 
     def __getattribute__(self, attrname):
         """Override attribute access for dynamic lookup."""
+        # Is the attribute in the user's list of aliases? If not:
         if attrname not in object.__getattribute__(self, "aliases"):
-            if attrname not in ["cd", "alias", "aliases", "remalias",
-                                "showalias", "listalias"]:
+            try:
+                # Is the object a function defined here?
+                object.__getattribute__(self, attrname)
+            except AttributeError:
+                # If not, return a partial subprocess_call with its name.
                 return _my_partial(_subprocess_call, [attrname])
             else:
+                # If it is defined here, just return it.
                 return object.__getattribute__(self, attrname)
+        # If it is aliased to something, return the modified partial func.
         else:
             return _my_partial(_subprocess_call,
                                self.aliases[attrname].split())
 
 
 class _my_partial(_partial):
+    """Extends partial function; overriding __repr__ to print something
+    useful when an object's name is referenced (but not called) at the
+    interpreter."""
     def __repr__(self):
-        return "pysh call: {} {}".format(
+        # e.g. pysh: call this object to run 'ls --color=auto'
+        return "pysh: call this object to run '{} {}'".format(
                 self.args[0][0], self.args[1:] if self.args[1] else "")
 
 
 def _my_chdir(dirpath="~"):
-    # dirpath = dirpath.replace("~", os.path.expanduser("~"))
-    # os.chdir(dirpath)
+    """Wrapper for os.chdir to allow for Bash expansion."""
     os.chdir(os.path.expanduser(dirpath))
 
 
@@ -78,15 +91,15 @@ def _subprocess_call(command, *moreargs):
        Can take any comma-separated args, or a list of args, or a
        string of space-separated args (or any combination of them)."""
     def splitify(mylist):
+        # Type checking ensures we don't call 'split()' on a list.
         return [i.split() if type(i)==str else i for i in mylist]
     def flatten(mylist):
         return chain(*mylist)
     if moreargs:
         moreargs = flatten(splitify(moreargs))
         command.extend(moreargs)
-    full_command = ' '.join(command)
-    full_command = full_command.split(";")
-    for command in full_command:
+    for command in ' '.join(command).split(";"):
+        # Split commands up by semicolon, like Bash does.
         command = command.split()
         try:
             subprocess.check_call(command)
