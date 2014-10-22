@@ -41,12 +41,15 @@ class _ShellHandler:
             print("pysh: {}: alias removed".format(aliasname))
 
     def showalias(self, aliasname):
-        print("pysh: {a} is aliased to {d[a]}"
-              "".format(a=aliasname, d=self.aliases))
+        try:
+            print("pysh: {a} is aliased to {d}"
+                  "".format(a=aliasname, d=self.aliases[aliasname]))
+        except KeyError:
+            print("pysh: {}: no such alias".format(aliasname))
 
-    def listalias(self, aliasname):
-        for item in self.aliases.items():
-            print("pysh: {i[0]} is aliased to {i[1]}".format(i=item))
+    def listalias(self):
+        for key in self.aliases.keys():
+            self.showalias(key)
 
     def __getattribute__(self, attrname):
         """Override attribute access for dynamic lookup."""
