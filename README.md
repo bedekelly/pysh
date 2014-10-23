@@ -45,3 +45,4 @@ sh.alias(up = 'sudo apt-get update;'
                 )
 ```
 - [ ] Colored (red/green) status indicator for each command run, possibly getting the return value from check_call or parsing error messages.
+- [ ] Fully-working pipe syntax, or some equally functional alternative
