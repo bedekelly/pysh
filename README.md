@@ -22,6 +22,12 @@ Just like in Bash, you can define aliases for shell calls you make regularly.
 >>> sh.alias(ls='ls --color=auto')
 >>> sh.ls()
     ... ls output, colored ...
+>>> sh.listalias()
+pysh: ls is aliased to 'ls --color=auto'
+>>> sh.showalias("ls")
+pysh: ls is aliased to 'ls --color=auto'
+>>> sh.rmalias("ls")
+pysh: ls: alias removed
 ```
 
 #####How does it work?
