@@ -18,6 +18,15 @@ import subprocess
 from itertools import chain
 from functools import partial as _partial
 
+SUPPORTS_COLORS = True
+
+class colors:
+    if SUPPORTS_COLORS:
+        GREEN = '\033[32m'
+        RED = '\033[31m'
+        REVERT = '\033[0m'
+        BLUE = '\033[34m'
+
 class _ShellHandler:
     """Handler for shell commands."""
     def __init__(self):
@@ -109,5 +118,11 @@ def _subprocess_call(command, *moreargs):
         except:
             # Any program which fails will print its own error message.
             pass
+    print(colors.GREEN + "[+] " + colors.REVERT
+          + "pysh: command(s) complete: "
+          "{}{}{}".format(
+                colors.GREEN,
+                '; '.join(c for c in command),
+                colors.REVERT))
 
 sh = _ShellHandler()
