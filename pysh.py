@@ -108,21 +108,23 @@ def _subprocess_call(command, *moreargs):
     if moreargs:
         moreargs = flatten(splitify(moreargs))
         command.extend(moreargs)
-    for command in ' '.join(command).split(";"):
+    for cmd in ' '.join(command).split(";"):
         # Split commands up by semicolon, like Bash does.
-        command = command.split()
+        cmd = cmd.split()
         try:
-            subprocess.check_call(command)
+            subprocess.check_call(cmd)
         except FileNotFoundError:
-            print("pysh: {}: command not found".format(command[0]))
+            print("pysh: {}: command not found".format(cmd[0]))
+            break
         except:
             # Any program which fails will print its own error message.
-            pass
-    print(colors.GREEN + "[+] " + colors.REVERT
-          + "pysh: command(s) complete: "
-          "{}{}{}".format(
-                colors.GREEN,
-                '; '.join(c for c in command),
-                colors.REVERT))
+            break
+    else:
+        print(colors.GREEN + "[+] " + colors.REVERT
+              + "pysh: command(s) complete: "
+              "{}{}{}".format(
+                    colors.GREEN,
+                    ', '.join(i.strip() for i in ' '.join(command).split(";")),
+                    colors.REVERT))
 
 sh = _ShellHandler()
