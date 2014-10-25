@@ -62,23 +62,15 @@ class _ShellHandler:
         for key in self.aliases.keys():
             self.showalias(key)
 
-    def __getattribute__(self, attrname):
+    def __getattr__(self, attrname):
         """Override attribute access for dynamic lookup."""
-        # Is the attribute in the user's list of aliases? If not:
-        if attrname not in object.__getattribute__(self, "aliases"):
-            try:
-                # Is the object a function defined here?
-                object.__getattribute__(self, attrname)
-            except AttributeError:
-                # If not, return a partial subprocess_call with its name.
-                return _my_partial(_subprocess_call, [attrname])
-            else:
-                # If it is defined here, just return it.
-                return object.__getattribute__(self, attrname)
+        if attrname in self.aliases:
         # If it is aliased to something, return the modified partial func.
-        else:
             return _my_partial(_subprocess_call,
                                self.aliases[attrname].split())
+        else:
+        # If not, return a wrapped subprocess call with the ref'd name
+            return _my_partial(_subprocess_call, [attrname])
 
 
 class _my_partial(_partial):
