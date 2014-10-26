@@ -81,8 +81,13 @@ class _my_partial(_partial):
     interpreter."""
     def __repr__(self):
         # e.g. pysh: call this object to run 'ls --color=auto'
-        return "pysh: call this object to run '{} {}'".format(
-                self.args[0][0], self.args[1:] if self.args[1] else "")
+        try:
+            self.args[1]
+        except IndexError:
+            return "pysh: call this object to run " + self.args[0][0]
+        else:
+            return "pysh: call this object to run '{} {}'".format(
+                    self.args[0][0], self.args[1:] if self.args[1] else "")
 
 
 def _my_chdir(dirpath="~"):
