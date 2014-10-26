@@ -133,5 +133,3 @@ def _subprocess_call(command, *moreargs, notify=False, system_notify=False):
             subprocess.call(["notify-send", notify_string, "-a", "Terminal"])
 
 sh = _ShellHandler()
-
-sh.ls("--color=auto;pwd;echo 'hello world!'", notify=True)
