@@ -20,6 +20,7 @@ from itertools import chain
 from functools import partial as _partial
 
 SUPPORTS_COLORS = True
+notify_on_success = False
 
 class colors:
     if SUPPORTS_COLORS:
@@ -89,7 +90,7 @@ def _my_chdir(dirpath="~"):
     os.chdir(os.path.expanduser(dirpath))
 
 
-def _subprocess_call(command, *moreargs):
+def _subprocess_call(command, *moreargs, notify=False, system_notify=False):
     """Allow for partial function to freeze one arg.
        Can take any comma-separated args, or a list of args, or a
        string of space-separated args (or any combination of them)."""
@@ -113,13 +114,24 @@ def _subprocess_call(command, *moreargs):
             # Any program which fails will print its own error message.
             break
     else:
-        print(colors.GREEN + "[+] " + colors.REVERT
-              + "pysh: command(s) complete: "
-              "{}{}{}".format(
-                    colors.GREEN,
-                    ', '.join(i.strip() for i in ' '.join(command).split(";")),
-                    colors.REVERT))
+        # Operation was fully successful.
+        if notify:
+            prefix = "{}[+]{} ".format(colors.GREEN, colors.REVERT)
+            msg = "pysh: command(s) complete: "
+            complete_cmds = "{}{}{}".format(
+                colors.GREEN,
+                    '{}, {}'.format(
+                        colors.REVERT, colors.GREEN
+                    ).join(i.strip() for i in ' '.join(command).split(";")),
+                colors.REVERT)
+            notify_string = prefix + msg + complete_cmds
+            print(notify_string)
+
+        if system_notify: # System notification.
+            notify_string = ("Pysh commands complete:\n" + '$ '
+                             + '\n$'.join(' '.join(command).split(";")))
+            subprocess.call(["notify-send", notify_string, "-a", "Terminal"])
 
 sh = _ShellHandler()
 
-sh.ls("--color=auto;pwd;echo 'hello world!'")
+sh.ls("--color=auto;pwd;echo 'hello world!'", notify=True)
