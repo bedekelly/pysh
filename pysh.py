@@ -14,6 +14,7 @@ Examples:
     pysh: asdfghjkl: command not found
 """
 import os
+import shlex
 import subprocess
 from itertools import chain
 from functools import partial as _partial
@@ -102,7 +103,7 @@ def _subprocess_call(command, *moreargs):
         command.extend(moreargs)
     for cmd in ' '.join(command).split(";"):
         # Split commands up by semicolon, like Bash does.
-        cmd = cmd.split()
+        cmd = shlex.split(cmd)  # Split by whitespace, except in quotes.
         try:
             subprocess.check_call(cmd)
         except FileNotFoundError:
@@ -120,3 +121,5 @@ def _subprocess_call(command, *moreargs):
                     colors.REVERT))
 
 sh = _ShellHandler()
+
+sh.ls("--color=auto;pwd;echo 'hello world!'")
