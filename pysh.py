@@ -14,6 +14,7 @@ Examples:
     pysh: asdfghjkl: command not found
 """
 import os
+import sys
 import shlex
 import subprocess
 from itertools import chain
