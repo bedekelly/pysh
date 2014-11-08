@@ -22,12 +22,14 @@ from functools import partial as _partial
 SUPPORTS_COLORS = True
 notify_on_success = False
 
+
 class colors:
     if SUPPORTS_COLORS:
         GREEN = '\033[32m'
         RED = '\033[31m'
         REVERT = '\033[0m'
         BLUE = '\033[34m'
+
 
 class _ShellHandler:
     """Handler for shell commands."""
@@ -80,6 +82,9 @@ class _my_partial(_partial):
     useful when an object's name is referenced (but not called) at the
     interpreter."""
     def __repr__(self):
+        # self()  # So sh.ls actually runs sh.ls()
+        # return ""
+
         # e.g. pysh: call this object to run 'ls --color=auto'
         try:
             self.args[1]
