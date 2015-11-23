@@ -83,8 +83,7 @@ class _my_partial(_partial):
     useful when an object's name is referenced (but not called) at the
     interpreter."""
     def __repr__(self):
-        # self()  # So sh.ls actually runs sh.ls()
-        # return ""
+        # return self()  # So sh.ls actually runs sh.ls()
 
         # e.g. pysh: call this object to run 'ls --color=auto'
         try:
@@ -101,10 +100,13 @@ def _my_chdir(dirpath="~"):
     os.chdir(os.path.expanduser(dirpath))
 
 
-def _subprocess_call(command, *moreargs, notify=False, system_notify=False):
+def _subprocess_call(command=None, *moreargs, notify=False, system_notify=False):
     """Allow for partial function to freeze one arg.
        Can take any comma-separated args, or a list of args, or a
        string of space-separated args (or any combination of them)."""
+    if command is None:
+        command = []
+
     def splitify(mylist):
         # Type checking ensures we don't call 'split()' on a list.
         return [i.split() if type(i)==str else i for i in mylist]
