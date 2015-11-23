@@ -117,7 +117,7 @@ def _subprocess_call(command, *moreargs, notify=False, system_notify=False):
         # Split commands up by semicolon, like Bash does.
         cmd = shlex.split(cmd)  # Split by whitespace, except in quotes.
         try:
-            subprocess.check_call(cmd)
+            out = subprocess.check_output(cmd)
         except FileNotFoundError:
             print("pysh: {}: command not found".format(cmd[0]))
             break
@@ -142,6 +142,8 @@ def _subprocess_call(command, *moreargs, notify=False, system_notify=False):
             notify_string = ("Pysh commands complete:\n" + '$ '
                              + '\n$'.join(' '.join(command).split(";")))
             subprocess.call(["notify-send", notify_string, "-a", "Terminal"])
+        return out.decode(sys.stdout.encoding)[:-1]
+
 
 sh = _ShellHandler()
 sys.modules['pysh'] = sh
